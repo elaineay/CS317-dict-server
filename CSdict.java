@@ -91,15 +91,25 @@ public class CSdict {
                         dictCommand();
                         break;
                     case "set":
-                        if (arguments.length == 1) {
-                            myDict = arguments[0];
+                        if (arguments.length != 1) {
+                            System.err.println("901 Incorrect number of arguments.");
+                            break;
                         }
+                        myDict = arguments[0];
                         break;
                     case "define":
-                        defineCommand();
+                        if (arguments.length != 1) {
+                            System.err.println("901 Incorrect number of arguments.");
+                            break;
+                        }
+                        defineCommand(arguments[0], myDict);
                         break;
                     case "match":
-                        matchCommand();
+                        if (arguments.length != 1) {
+                            System.err.println("901 Incorrect number of arguments.");
+                            break;
+                        }
+                        matchCommand(arguments[0], myDict, "exact");
                         break;
                     case "prefixmatch":
                         prefixmatchCommand();
@@ -163,7 +173,7 @@ public class CSdict {
     */
     private static void dictCommand() {
         if(socket == null || socket.isClosed()) {
-            System.err.println("999 Processing error. \"Open\" needs to be called before \"dict\".");
+            System.err.println("999 Processing error. \"Open\" needs to be called before \"Dict\".");
             return;
         }
         try {
@@ -172,10 +182,10 @@ public class CSdict {
             while(true) {
                 dictList = in.readLine();
                 System.out.println(dictList);
-                if (dictList == "250 ok") break;
+                if (dictList.contains("250 ok")) break;
             }
         } catch (Exception exception){
-            System.err.println("999 Processing error. Dict failed to be called");
+            System.err.println("999 Processing error. \"Dict\" failed to be called");
             System.exit(-1);
         }
     }
@@ -190,15 +200,57 @@ public class CSdict {
     /*
      * TODO: Check the link man. I give up.
     */
-    private static void defineCommand() {
-        System.out.println("defineCommand() is called.");
+    private static void defineCommand(String word, String dictName) {
+        if(socket == null || socket.isClosed()) {
+            System.err.println("999 Processing error. \"Open\" needs to be called before \"Define\".");
+            return;
+        }
+        try {
+            out.println("DEFINE " + dictName + " " + word);
+            String defList;
+            while (true) {
+                defList = in.readLine();
+                if (defList.contains("552 no match")) {
+                    System.out.println("***No definition found***");
+                    matchCommand(word, dictName, ".");
+                    break;
+                }
+                System.out.println(defList);
+                if (defList.contains("250 ok")) break;
+            }
+        } catch (Exception exception) {
+            System.err.println("999 Processing error.\"Define\" failed to be called");
+            System.exit(-1);
+        }
     }
 
     /*
      * TODO: Check the link man. I give up.
     */
-    private static void matchCommand() {
-        System.out.println("matchCommand() is called.");
+    private static void matchCommand(String word, String dictName, String strategy) {
+        if(socket == null || socket.isClosed()) {
+            System.err.println("999 Processing error. \"Open\" needs to be called before \"Match\".");
+            return;
+        }
+        try {
+            out.println("MATCH " + dictName + " " + strategy + " " + word);
+            String matchList;
+            while (true) {
+                matchList = in.readLine();
+                if (matchList.contains("552 no match") && strategy.equals(".")) {
+                    System.out.println("****No matches found****");
+                    break;
+                } else if (matchList.contains("552 no match") && strategy.equals("exact")) {
+                    System.out.println("*****No matching word(s) found*****");
+                    break;
+                }
+                System.out.println(matchList);
+                if (matchList.contains("250 ok")) break;
+            }
+        } catch (Exception exception) {
+            System.err.println("999 Processing error. \"Match\" failed to be called");
+            System.exit(-1);
+        }
     }
 
     /*
