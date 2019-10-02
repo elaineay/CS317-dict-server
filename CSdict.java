@@ -30,6 +30,9 @@ public class CSdict {
     private static int SET_TIMEOUT_LIMIT = 30000;
 
     private static Socket socket;
+    private static PrintWriter out;
+    private static BufferedReader in;
+    private static BufferedReader stdIn;
 
     public static void main(String [] args) {
         
@@ -80,7 +83,7 @@ public class CSdict {
                         // }
                         // openSocketConnection(arguments[0], Integer.parseInt(arguments[1]));
 
-                        openSocketConnection(hostname, portNumber); // Hardcoded for easier testing
+                        openCommand(hostname, portNumber); // Hardcoded for easier testing
                         break;
                     case "dict":
                         dictCommand();
@@ -155,7 +158,19 @@ public class CSdict {
      *	to print each of these lines as returned by the server.
     */
     private static void dictCommand() {
-        System.out.println("dictCommand() is called.");
+        if(socket.isClosed() || socket == null) {
+            System.err.println("903 Supplied command not expected at this time.");
+            return;
+        }
+        try {
+            out.println("Show DB");
+            while(in.readLine() != null) {
+                System.out.println(in.readLine());
+            }
+        } catch (Exception exception){
+            System.err.println("999 Processing error. Dict failed to be called");
+            System.exit(-1);
+        }
     }
 
     /*
@@ -169,7 +184,7 @@ public class CSdict {
      * TODO: Check the link man. I give up.
     */
     private static void defineCommand() {
-        System.out.println("openCommand() is called.");
+        System.out.println("defineCommand() is called.");
     }
 
     /*
@@ -212,19 +227,16 @@ public class CSdict {
 	    System.exit(0);
     }
 
-    private static void openSocketConnection(String hostName, int portNumber) {
+    private static void openCommand(String hostName, int portNumber) {
         if (socket != null && socket.isConnected()) {
             System.err.println("903 Supplied command not expected at this time. ");
         }
         try {
-            Socket socket = new Socket(hostName, portNumber);
-            PrintWriter out =
-                    new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader in =
-                    new BufferedReader(
+            socket = new Socket(hostName, portNumber);
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
-            BufferedReader stdIn =
-                    new BufferedReader(
+            stdIn = new BufferedReader(
                             new InputStreamReader(System.in));
             System.out.println(in.readLine());
         }
