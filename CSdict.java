@@ -73,6 +73,8 @@ public class CSdict {
                 command = inputs[0].toLowerCase().trim();
                 // Remainder of the inputs is the arguments.
                 arguments = Arrays.copyOfRange(inputs, 1, inputs.length);
+
+                String myDict = "*";
                 switch(command) {
                     case "open":
                         String hostname = "dict.org";
@@ -89,7 +91,9 @@ public class CSdict {
                         dictCommand();
                         break;
                     case "set":
-                        setCommand();
+                        if (arguments.length == 1) {
+                            myDict = arguments[0];
+                        }
                         break;
                     case "define":
                         defineCommand();
@@ -158,14 +162,17 @@ public class CSdict {
      *	to print each of these lines as returned by the server.
     */
     private static void dictCommand() {
-        if(socket.isClosed() || socket == null) {
-            System.err.println("903 Supplied command not expected at this time.");
+        if(socket == null || socket.isClosed()) {
+            System.err.println("999 Processing error. \"Open\" needs to be called before \"dict\".");
             return;
         }
         try {
             out.println("Show DB");
-            while(in.readLine() != null) {
-                System.out.println(in.readLine());
+            String dictList;
+            while(true) {
+                dictList = in.readLine();
+                System.out.println(dictList);
+                if (dictList == "250 ok") break;
             }
         } catch (Exception exception){
             System.err.println("999 Processing error. Dict failed to be called");
@@ -176,9 +183,9 @@ public class CSdict {
     /*
      * TODO: Check the link man. I give up.
     */
-    private static void setCommand() {
-        System.out.println("setCommand() is called.");
-    }
+    // private static void setCommand() {
+    //     System.out.println("setCommand() is called.");
+    // }
 
     /*
      * TODO: Check the link man. I give up.
