@@ -77,9 +77,13 @@ public class CSdict {
                 String myDict = "*";
                 switch(command) {
                     case "open":
+//                        TODO: remove this when handing in
                         String hostname = "dict.org";
                         Integer portNumber = 2628;
                         openCommand(hostname, portNumber); // Hardcoded for easier testing
+                        if () { //1 or more arguments invalid ie second arg non numeric value
+                            System.err.println("902 Invalid argument.");
+                        }
                         break;
                     case "dict":
                         dictCommand();
