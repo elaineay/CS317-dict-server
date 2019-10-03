@@ -79,12 +79,6 @@ public class CSdict {
                     case "open":
                         String hostname = "dict.org";
                         Integer portNumber = 2628;
-                        // if (arguments == null || arguments.length != 2) {
-                        //     System.err.println("901 Incorrect number of arguments.");
-                        //     return;
-                        // }
-                        // openSocketConnection(arguments[0], Integer.parseInt(arguments[1]));
-
                         openCommand(hostname, portNumber); // Hardcoded for easier testing
                         break;
                     case "dict":
@@ -140,19 +134,6 @@ public class CSdict {
  *	connection is already open.
 */
 
-// LITERALLY THIS IS NOT REQUIRED
-//private static void openCommand() {
-////    System.out.println("open command selected!");
-//	String hostname = "dict.org";
-//	Integer portNumber = 2628;
-//  // Socket socket = new Socket(hostName, portNumber);
-//	if (socket.isConnected()) {
-//		System.err.println("903 Supplied command not expected at this time.");
-//	} else {
-//		openSocketConnection(hostname, portNumber);
-//	}
-//}
-
 
     /*
      *	TODO: Retrieve and print the list of all the dictionaries
@@ -172,7 +153,7 @@ public class CSdict {
             while(true) {
                 dictList = in.readLine();
                 System.out.println(dictList);
-                if (dictList == "250 ok") break;
+                if (dictList.equals("250 ok")) break;
             }
         } catch (Exception exception){
             System.err.println("999 Processing error. Dict failed to be called");
@@ -180,16 +161,6 @@ public class CSdict {
         }
     }
 
-    /*
-     * TODO: Check the link man. I give up.
-    */
-    // private static void setCommand() {
-    //     System.out.println("setCommand() is called.");
-    // }
-
-    /*
-     * TODO: Check the link man. I give up.
-    */
     private static void defineCommand() {
         System.out.println("defineCommand() is called.");
     }
@@ -212,17 +183,15 @@ public class CSdict {
      * TODO: closeCommand closes the connection and is in a state waiting to open or quit
     */
     private static void closeCommand() {
-//	 try {
-//	 	if (socket.isClosed() || socket == null) {
-//	 		return;
-//	 	}
-//
-////		 out.close();
-////		 in.close();
-//		 socket.close();
-//	 } catch (IOException exception) {
-//	 	System.err.println("999 Processing error. You done fucked up.");
-//	 }
+	 try {
+	 	if (socket.isClosed() || socket == null) {
+	 		return;
+	 	}
+         socket.close();
+
+	 } catch (IOException exception) {
+	 	System.err.println("999 Processing error. You done fucked up.");
+	 }
     }
 
     /*
