@@ -112,7 +112,11 @@ public class CSdict {
                         matchCommand(arguments[0], myDict, "exact");
                         break;
                     case "prefixmatch":
-                        prefixmatchCommand();
+                        if (arguments.length != 1) {
+                            System.err.println("901 Incorrect number of arguments.");
+                            break;
+                        }
+                        matchCommand(arguments[0], myDict, "prefix");
                         break;
                     case "close":
                         closeCommand();
@@ -243,6 +247,9 @@ public class CSdict {
                 } else if (matchList.contains("552 no match") && strategy.equals("exact")) {
                     System.out.println("*****No matching word(s) found*****");
                     break;
+                } else if (matchList.contains("552 no match") && strategy.equals("prefix")) {
+                    System.out.println("***No matching word(s) found****");
+                    break;
                 }
                 System.out.println(matchList);
                 if (matchList.contains("250 ok")) break;
@@ -251,13 +258,6 @@ public class CSdict {
             System.err.println("999 Processing error. \"Match\" failed to be called");
             System.exit(-1);
         }
-    }
-
-    /*
-     * TODO: Check the link man. I give up.
-    */
-    private static void prefixmatchCommand() {
-        System.out.println("prefixmatchCommand() is called.");
     }
 
     /*
