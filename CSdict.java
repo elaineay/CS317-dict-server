@@ -5,13 +5,12 @@
 // Although your main class has to be in this file, there is no requirement that you
 // use this template or hav all or your classes in this file.
 
-import java.lang.System;
-import java.io.IOException;
-import java.util.Arrays;
 import java.io.BufferedReader;
-import java.io.PrintWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 
 //
 // This is an implementation of a simplified version of a command
@@ -56,8 +55,6 @@ public class CSdict {
 
         String userInput;
         while (true) {
-
-
             // Example code to read command line input and extract arguments.
 
             try {
@@ -74,14 +71,18 @@ public class CSdict {
                 // Remainder of the inputs is the arguments.
                 arguments = Arrays.copyOfRange(inputs, 1, inputs.length);
 
+            } catch (IOException exception) {
+                System.err.println("998 Input error while reading commands, terminating.");
+                System.exit(-1);
+            }
+            try{
                 String myDict = "*";
                 switch(command) {
                     case "open":
-//                        TODO: remove this when handing in
-                        String hostname = "dict.org";
-                        Integer portNumber = 2628;
-                        openCommand(hostname, portNumber); // Hardcoded for easier testing
-                        if () { //1 or more arguments invalid ie second arg non numeric value
+                        try {
+                            openCommand(arguments[0], Integer.parseInt(arguments[1]));
+                            //1 or more arguments invalid ie. second arg non-numeric value
+                        } catch (NumberFormatException exception) {
                             System.err.println("902 Invalid argument.");
                         }
                         break;
@@ -126,18 +127,8 @@ public class CSdict {
                         System.err.println("900 Invalid command.");
                 }
 
-                // TODO: Delete this
-                // System.out.println("The command is: " + command);
-                // len = arguments.length;
-                // System.out.println("The arguments are: ");
-                // for (int i = 0; i < len; i++) {
-                //     System.out.println("    " + arguments[i]);
-                // }
-                // System.out.println("Done.");
-
-            } catch (IOException exception) {
-                System.err.println("998 Input error while reading commands, terminating.");
-                System.exit(-1);
+            } catch (Exception exception) {
+                System.err.println("925 Control connection I/O error, closing control connection.");
             }
         }
     }
@@ -273,11 +264,9 @@ public class CSdict {
                             new InputStreamReader(socket.getInputStream()));
             stdIn = new BufferedReader(
                             new InputStreamReader(System.in));
-            System.out.println(in.readLine());
         }
         catch (IOException exception) {
-            System.err.println("998 Input error while reading commands, terminating.");
-            System.exit(-1);
+            System.err.println("920 Control connection to " + hostName + " on port " + portNumber + " failed to open.");
         }
     }
 }
