@@ -33,6 +33,10 @@ public class CSdict {
     private static BufferedReader in;
     private static BufferedReader stdIn;
 
+//    private static Pattern r = Pattern.compile("#.*");
+//    private static Matcher m;
+//    private static String s;
+
     public static void main(String [] args) {
         
         int len;
@@ -71,13 +75,20 @@ public class CSdict {
                 // Remainder of the inputs is the arguments.
                 arguments = Arrays.copyOfRange(inputs, 1, inputs.length);
 
+
+
             } catch (IOException exception) {
                 System.err.println("998 Input error while reading commands, terminating.");
                 System.exit(-1);
             }
             try{
                 String myDict = "*";
+
+//                m = r.matcher(command);
+//                s = m.find() ? m.group() : "";
                 switch(command) {
+
+
                     case "open":
                         try {
                             openCommand(arguments[0], Integer.parseInt(arguments[1]));
@@ -123,6 +134,12 @@ public class CSdict {
                     case "quit":
                         quitCommand();
                         break;
+                    case "":
+                        break;
+
+//                    case s:
+//                        break;
+
                     default:
                         System.err.println("900 Invalid command.");
                 }
