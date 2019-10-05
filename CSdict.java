@@ -88,7 +88,6 @@ public class CSdict {
 //                s = m.find() ? m.group() : "";
                 switch(command) {
 
-
                     case "open":
                         try {
                             openCommand(arguments[0], Integer.parseInt(arguments[1]));
@@ -191,28 +190,45 @@ public class CSdict {
      * TODO: Check the link man. I give up.
     */
     private static void defineCommand(String word, String dictName) {
-        if(socket == null || socket.isClosed()) {
+        Integer STATUS_LENGTH = 6;
+        if (socket == null || socket.isClosed()) {
             System.err.println("999 Processing error. \"Open\" needs to be called before \"Define\".");
             return;
         }
         try {
             out.println("DEFINE " + dictName + " " + word);
+            if (debugOn) {
+                System.out.println("> DEFINE " + dictName + " " + word);
+            }
             String defList;
             while (true) {
                 defList = in.readLine();
+                // Print <-- on server response with debug on
+                if (debugOn & containsStatusMessage(defList)) {
+                    System.out.println("<-- " + defList);
+                }
+                // break early if no match found
                 if (defList.contains("552 no match")) {
                     System.out.println("***No definition found***");
                     matchCommand(word, dictName, ".");
                     break;
+                // break if 250 ok
+                } else if (defList.contains("250 ok")) {
+                    break;
                 }
-                System.out.println(defList);
-                if (defList.contains("250 ok")) break;
+                // Print @ if 151 is found
+                if (!debugOn & defList.toLowerCase().contains("151 " + "\"" + word.toLowerCase() + "\"")) {
+                    System.out.println("@" + defList.substring(STATUS_LENGTH + word.length()));
+                } else if (!containsStatusMessage(defList)){
+                    System.out.println(defList);
+                }
             }
         } catch (Exception exception) {
-            System.err.println("999 Processing error.\"Define\" failed to be called");
+            System.err.println(exception);
+            // System.err.println("999 Processing error.\"Define\" failed to be called");
             System.exit(-1);
-        }
-    }
+          }
+      }
 
     /*
      * TODO: Check the link man. I give up.
@@ -224,9 +240,15 @@ public class CSdict {
         }
         try {
             out.println("MATCH " + dictName + " " + strategy + " " + word);
+            if (debugOn) {
+                System.out.println("> MATCH" + dictName + " " + word);
+            }
             String matchList;
             while (true) {
                 matchList = in.readLine();
+                if (debugOn & containsStatusMessage(matchList)) {
+                    System.out.println("<-- " + matchList);
+                }
                 if (matchList.contains("552 no match") && strategy.equals(".")) {
                     System.out.println("****No matches found****");
                     break;
@@ -236,8 +258,12 @@ public class CSdict {
                 } else if (matchList.contains("552 no match") && strategy.equals("prefix")) {
                     System.out.println("***No matching word(s) found****");
                     break;
+                } else if (matchList.contains("250 ok")) {
+                    break;
                 }
-                System.out.println(matchList);
+                if (!containsStatusMessage(matchList)) {
+                    System.out.println(matchList);
+                }
                 if (matchList.contains("250 ok")) break;
             }
         } catch (Exception exception) {
@@ -257,7 +283,7 @@ public class CSdict {
          socket.close();
 
 	 } catch (IOException exception) {
-	 	System.err.println("999 Processing error. You done fucked up.");
+	 	System.err.println("925 Control connection I/O error, closing control connection.");
 	 }
     }
 
@@ -285,5 +311,18 @@ public class CSdict {
         catch (IOException exception) {
             System.err.println("920 Control connection to " + hostName + " on port " + portNumber + " failed to open.");
         }
+    }
+
+    /*
+     * Given a line from the server, returns true if it is a status message
+     * false otherwise.
+    */
+    private static boolean containsStatusMessage(String line) {
+        try {
+            return line.length() > 3 & line.substring(0,2).matches("[0-9]+");
+        } catch (StringIndexOutOfBoundsException exception) {
+            return false;
+        }
+        
     }
 }
