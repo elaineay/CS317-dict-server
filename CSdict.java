@@ -38,9 +38,9 @@ public class CSdict {
         
         int len;
         // Verify command line arguments
-
         if (args.length == PERMITTED_ARGUMENT_COUNT) {
-            debugOn = args[0].equals("-d");
+            debugOn = args[0].equals("[-d]");
+            System.out.println(debugOn);
             if (debugOn) {
                 System.out.println("Debugging output enabled");
             } else {
@@ -76,13 +76,6 @@ public class CSdict {
 
                 String myDict = "*";
                 switch(command) {
-                    // TODO: Delete this, this isn't how it's supposed to work
-                    case "-d":
-                        if (arguments.length == 0) {
-                            debugOn = true;
-                            System.out.println("Debugging output enabled");
-                        }
-                        break;
                     case "open":
                         String hostname = "dict.org";
                         Integer portNumber = 2628;
@@ -125,6 +118,8 @@ public class CSdict {
                     case "quit":
                         quitCommand();
                         break;
+                    case "":
+                        break;
                     default:
                         System.err.println("900 Invalid command.");
                 }
@@ -165,7 +160,7 @@ public class CSdict {
     */
     private static void dictCommand() {
         if(socket == null || socket.isClosed()) {
-            System.err.println("999 Processing error. \"Open\" needs to be called before \"Dict\".");
+            System.err.println("903 Supplied command not expected at this time.");
             return;
         }
         try {
@@ -188,7 +183,7 @@ public class CSdict {
     private static void defineCommand(String word, String dictName) {
         Integer STATUS_LENGTH = 6;
         if (socket == null || socket.isClosed()) {
-            System.err.println("999 Processing error. \"Open\" needs to be called before \"Define\".");
+            System.err.println("903 Supplied command not expected at this time.");
             return;
         }
         try {
@@ -231,7 +226,7 @@ public class CSdict {
     */
     private static void matchCommand(String word, String dictName, String strategy) {
         if(socket == null || socket.isClosed()) {
-            System.err.println("999 Processing error. \"Open\" needs to be called before \"Match\".");
+            System.err.println("903 Supplied command not expected at this time.");
             return;
         }
         try {
