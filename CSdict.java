@@ -32,10 +32,7 @@ public class CSdict {
     private static PrintWriter out;
     private static BufferedReader in;
     private static BufferedReader stdIn;
-
-//    private static Pattern r = Pattern.compile("#.*");
-//    private static Matcher m;
-//    private static String s;
+    private static String myDict = "*";
 
     public static void main(String [] args) {
         
@@ -57,7 +54,6 @@ public class CSdict {
         // Infinite while loop to keep program running
 
         String userInput;
-        String myDict = "*";
         while (true) {
             // Example code to read command line input and extract arguments.
 
@@ -104,7 +100,7 @@ public class CSdict {
                             break;
                         }
                         myDict = arguments[0];
-                        System.out.println("Strategy set to: " + myDict);
+                        System.out.println("Database set to: " + myDict);
                         break;
                     case "define":
                         if (arguments.length != 1) {
@@ -222,6 +218,8 @@ public class CSdict {
                     break;
                 } else if (defList.contains("550 invalid database")) {
                     System.out.println("999 Processing error. Invalid database.");
+                    myDict = "*";
+                    System.out.println("Database reset to: " + myDict);
                     break;
                 } else if (defList.contains("530")) {
                     System.err.println("999 Processing error. Access Denied.");
@@ -274,6 +272,8 @@ public class CSdict {
                     break;
                 } else if (matchList.contains("550 invalid database")) {
                     System.out.println("999 Processing error. Invalid database.");
+                    myDict = "*";
+                    System.out.println("Database reset to: " + myDict);
                     break;
                 } else if (matchList.contains("530")) {
                     System.err.println("999 Processing error. Access Denied.");
