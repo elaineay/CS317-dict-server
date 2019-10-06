@@ -173,6 +173,10 @@ public class CSdict {
         }
         try {
             out.println("Show DB");
+            if (debugOn) {
+                System.out.println("> DICT");
+                System.out.println("<-- " + in.readLine());
+            }
             String dictList;
             while(true) {
                 dictList = in.readLine();
@@ -279,20 +283,24 @@ public class CSdict {
 	 	if (socket.isClosed() || socket == null) {
 	 		return;
 	 	}
+         if (debugOn) {
+             System.out.println("> CLOSE " + socket);
+             out.println("QUIT");
+             System.out.println("<-- " + in.readLine());
+         }
+
          socket.close();
 
 	 } catch (IOException exception) {
-	 	System.err.println("925 Control connection I/O error, closing control connection.");
-	 }
+         System.out.println("help");
+     }
     }
 
     /*
-     * TODO: What's the difference from closeCommand()
      * need to do close before it can quit
     */
     private static void quitCommand() {
-        System.out.println("Good bye!");
-	    System.exit(0);
+            System.exit(0);
     }
 
     private static void openCommand(String hostName, int portNumber) {
@@ -300,12 +308,19 @@ public class CSdict {
             System.err.println("903 Supplied command not expected at this time. ");
         }
         try {
+            if (debugOn) {
+                System.out.println("> OPEN " + hostName + " " + portNumber);
+            }
             socket = new Socket(hostName, portNumber);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(
                             new InputStreamReader(socket.getInputStream()));
             stdIn = new BufferedReader(
                             new InputStreamReader(System.in));
+            if (debugOn) {
+                System.out.println("<-- " + in.readLine());
+            }
+
         }
         catch (IOException exception) {
             System.err.println("920 Control connection to " + hostName + " on port " + portNumber + " failed to open.");
