@@ -43,7 +43,6 @@ public class CSdict {
         // Verify command line arguments
         if (args.length == PERMITTED_ARGUMENT_COUNT) {
             debugOn = args[0].equals("[-d]");
-            System.out.println(debugOn);
             if (debugOn) {
                 System.out.println("Debugging output enabled");
             } else {
@@ -58,6 +57,7 @@ public class CSdict {
         // Infinite while loop to keep program running
 
         String userInput;
+        String myDict = "*";
         while (true) {
             // Example code to read command line input and extract arguments.
 
@@ -82,10 +82,6 @@ public class CSdict {
                 System.exit(-1);
             }
             try{
-                String myDict = "*";
-
-//                m = r.matcher(command);
-//                s = m.find() ? m.group() : "";
                 switch(command) {
                     case "open":
                         try {
@@ -134,10 +130,6 @@ public class CSdict {
                         break;
                     case "":
                         break;
-
-//                    case s:
-//                        break;
-
                     default:
                         System.err.println("900 Invalid command.");
                 }
@@ -180,8 +172,12 @@ public class CSdict {
             String dictList;
             while(true) {
                 dictList = in.readLine();
+                if (dictList.contains("250 ok")) break;
+                if (dictList.contains("530")) {
+                    System.err.println("999 Processing error. Access Denied.");
+                    break;
+                }
                 System.out.println(dictList);
-                if (dictList.equals("250 ok")) break;
             }
         } catch (Exception exception){
             System.err.println("999 Processing error. \"Dict\" failed to be called");
@@ -215,6 +211,9 @@ public class CSdict {
                     System.out.println("***No definition found***");
                     matchCommand(word, dictName, ".");
                     break;
+                } else if (defList.contains("550 invalid database")) {
+                    System.out.println("999 Processing error. Invalid database.");
+                    break;
                 // break if 250 ok
                 } else if (defList.contains("250 ok")) {
                     break;
@@ -244,7 +243,7 @@ public class CSdict {
         try {
             out.println("MATCH " + dictName + " " + strategy + " " + word);
             if (debugOn) {
-                System.out.println("> MATCH" + dictName + " " + word);
+                System.out.println("> MATCH " + dictName + " " + strategy + " " + word);
             }
             String matchList;
             while (true) {
@@ -260,6 +259,9 @@ public class CSdict {
                     break;
                 } else if (matchList.contains("552 no match") && strategy.equals("prefix")) {
                     System.out.println("***No matching word(s) found****");
+                    break;
+                } else if (matchList.contains("550 invalid database")) {
+                    System.out.println("999 Processing error. Invalid database.");
                     break;
                 } else if (matchList.contains("250 ok")) {
                     break;
@@ -281,18 +283,17 @@ public class CSdict {
     private static void closeCommand() {
 	 try {
 	 	if (socket.isClosed() || socket == null) {
+            System.err.println("903 Supplied command not expected at this time");
 	 		return;
 	 	}
+        out.println("QUIT");
          if (debugOn) {
              System.out.println("> CLOSE " + socket);
-             out.println("QUIT");
              System.out.println("<-- " + in.readLine());
          }
-
          socket.close();
-
 	 } catch (IOException exception) {
-         System.out.println("help");
+         System.out.println("999 Processing error. This shouldn't have happened.");
      }
     }
 
@@ -305,7 +306,7 @@ public class CSdict {
 
     private static void openCommand(String hostName, int portNumber) {
         if (socket != null && socket.isConnected()) {
-            System.err.println("903 Supplied command not expected at this time. ");
+            System.err.println("903 Supplied command not expected at this time.");
         }
         try {
             if (debugOn) {
