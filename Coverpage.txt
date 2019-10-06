@@ -27,16 +27,16 @@ other will then update their by doing a pull and then add their
 information to this file and then commit and push this file.
 
 
-STUDENT  1
-Name :
-St. No:
-Unix Id :
-Email:
+STUDENT 1
+Name : Elaine Au-Yang
+St. No: 14609168
+Unix Id : elaineay
+Email: elaineauyang@hotmail.com
 
 
 STUDENT  2
-Name :
-St. No:
-Unix Id :
-Email:
+Name : Brendon Chiang
+St. No: 23089155
+Unix Id : cbrendon
+Email: brendon.chiang@gmail.com
 
