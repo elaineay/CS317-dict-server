@@ -172,10 +172,13 @@ public class CSdict {
                     System.out.println(dictList);
                 }
             }
+        } catch (IOException exception) {
+            System.err.println("925 Control connection I/O error, closing control connection.");
+            closeCommand();
         } catch (Exception exception){
             System.err.println("999 Processing error. \"Dict\" failed to be called");
             System.exit(-1);
-        }
+        } 
     }
 
     /*
@@ -225,10 +228,13 @@ public class CSdict {
                     System.out.println(defList);
                 }
             }
+        } catch (IOException exception) {
+            System.err.println("925 Control connection I/O error, closing control connection.");
+            closeCommand();
         } catch (Exception exception) {
             System.err.println("999 Processing error.\"Define\" failed to be called");
             System.exit(-1);
-          }
+        } 
       }
 
     /*
@@ -279,6 +285,9 @@ public class CSdict {
                 }
                 if (matchList.contains("250 ok")) break;
             }
+        } catch (IOException exception) {
+            System.err.println("925 Control connection I/O error, closing control connection.");
+            closeCommand();
         } catch (Exception exception) {
             System.err.println("999 Processing error. \"Match\" failed to be called");
             System.exit(-1);
@@ -291,22 +300,22 @@ public class CSdict {
      * expected is an open or quit.
     */
     private static void closeCommand() {
-	 try {
-	 	if (socket.isClosed() || socket == null) {
+    	try {
+    	 	if (socket.isClosed() || socket == null) {
+                System.err.println("903 Supplied command not expected at this time");
+    	 		return;
+    	 	}
+            out.println("QUIT");
+            if (debugOn) {
+                System.out.println("> CLOSE " + socket);
+                System.out.println("<-- " + in.readLine());
+            }
+            socket.close();
+    	} catch (IOException exception) {
+            System.out.println("999 Processing error. This shouldn't have happened.");
+        } catch (NullPointerException exception) {
             System.err.println("903 Supplied command not expected at this time");
-	 		return;
-	 	}
-        out.println("QUIT");
-         if (debugOn) {
-             System.out.println("> CLOSE " + socket);
-             System.out.println("<-- " + in.readLine());
-         }
-         socket.close();
-	 } catch (IOException exception) {
-         System.out.println("999 Processing error. This shouldn't have happened.");
-     } catch (NullPointerException exception) {
-        System.err.println("903 Supplied command not expected at this time");
-     }
+        }
     }
 
     /*
