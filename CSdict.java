@@ -307,6 +307,8 @@ public class CSdict {
          socket.close();
 	 } catch (IOException exception) {
          System.out.println("999 Processing error. This shouldn't have happened.");
+     } catch (NullPointerException exception) {
+        System.err.println("903 Supplied command not expected at this time");
      }
     }
 
@@ -322,7 +324,7 @@ public class CSdict {
      * 	The user inputs a server hostName and portNumber.
     */
     private static void openCommand(String hostName, int portNumber) {
-        if (socket != null && socket.isConnected()) {
+        if (socket != null && !socket.isClosed()) {
             System.err.println("903 Supplied command not expected at this time.");
         }
         try {
