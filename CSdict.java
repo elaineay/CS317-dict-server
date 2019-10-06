@@ -33,6 +33,10 @@ public class CSdict {
     private static BufferedReader in;
     private static BufferedReader stdIn;
 
+//    private static Pattern r = Pattern.compile("#.*");
+//    private static Matcher m;
+//    private static String s;
+
     public static void main(String [] args) {
         
         int len;
@@ -55,7 +59,7 @@ public class CSdict {
         String userInput;
         String myDict = "*";
         while (true) {
-            // Read command line input and extract arguments.
+            // Example code to read command line input and extract arguments.
 
             try {
                 byte cmdString[] = new byte[MAX_LEN];
@@ -71,19 +75,13 @@ public class CSdict {
                 // Remainder of the inputs is the arguments.
                 arguments = Arrays.copyOfRange(inputs, 1, inputs.length);
 
+
+
             } catch (IOException exception) {
                 System.err.println("998 Input error while reading commands, terminating.");
                 System.exit(-1);
             }
             try{
-                String myDict = "*";
-
-                // this silently ignores lines starting with a '#'
-                char hashtag = '#';
-                if(command.charAt(0) == hashtag) {
-                    continue;
-                }
-
                 switch(command) {
                     case "open":
                         try {
@@ -147,9 +145,23 @@ public class CSdict {
         }
     }
 
+/*
+ *	TODO: Opens a new TCP/IP connection to an dictionary server.
+ *	The server's name and the port number the server is listening
+ *	on are specified by the command's parameters. The server name
+ *	can be either a domain name or an IP address in dotted form.
+ *	Both the SERVER and PORT values must be provided. This command
+ *	is considered an unexpected command if it is given when a control
+ *	connection is already open.
+*/
+
 
     /*
-     *	sends 'Show DB' to the server
+     *	TODO: Retrieve and print the list of all the dictionaries
+     *	the server supports. Each line will consist of a single
+     *	word that is the the name of a dictionary followed by
+     *	some information about the dictionary. You simply have
+     *	to print each of these lines as returned by the server.
     */
     private static void dictCommand() {
         if(socket == null || socket.isClosed()) {
@@ -183,8 +195,7 @@ public class CSdict {
     }
 
     /*
-     * Retrieve and print all the definitions for given input word.
-     * This can be looked up in the dictionaries specified by dictName.
+     * TODO: Check the link man. I give up.
     */
     private static void defineCommand(String word, String dictName) {
         Integer STATUS_LENGTH = 6;
@@ -282,7 +293,7 @@ public class CSdict {
     }
 
     /*
-     * closeCommand closes the connection to the port and is in a state waiting to open or quit
+     * TODO: closeCommand closes the connection and is in a state waiting to open or quit
     */
     private static void closeCommand() {
 	 try {
@@ -302,18 +313,12 @@ public class CSdict {
     }
 
     /*
-     * After sending the appropriate command to the server and receiving a response,
-     * closes the established connection and enters a state where the next command
-     * expected is an open or quit.
+     * need to do close before it can quit
     */
     private static void quitCommand() {
             System.exit(0);
     }
 
-    /*
-     * Opens a new TCP/IP connection to an dictionary server.
-     * The server is listening on the provided host and port number.
-     */
     private static void openCommand(String hostName, int portNumber) {
         if (socket != null && socket.isConnected()) {
             System.err.println("903 Supplied command not expected at this time.");
