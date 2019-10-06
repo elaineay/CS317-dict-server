@@ -81,6 +81,10 @@ public class CSdict {
                 switch(command) {
                     case "open":
                         try {
+                            if (arguments.length != 2) {
+                                System.err.println("901 Incorrect number of arguments.");
+                                break;
+                            }
                             openCommand(arguments[0], Integer.parseInt(arguments[1]));
                             //1 or more arguments invalid ie. second arg non-numeric value
                         } catch (NumberFormatException exception) {
