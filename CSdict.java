@@ -175,7 +175,7 @@ public class CSdict {
         } catch (IOException exception) {
             System.err.println("925 Control connection I/O error, closing control connection.");
             closeCommand();
-        } catch (Exception exception){
+        } catch (Exception exception) {
             System.err.println("999 Processing error. \"Dict\" failed to be called");
             System.exit(-1);
         } 
@@ -235,7 +235,7 @@ public class CSdict {
             System.err.println("999 Processing error.\"Define\" failed to be called");
             System.exit(-1);
         } 
-      }
+    }
 
     /*
      * Retrieve and print all the exact matches for given input word.
