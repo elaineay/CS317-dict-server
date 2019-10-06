@@ -17,8 +17,6 @@ import java.util.Arrays;
 // line dictionary client. The only argument the program takes is
 // -d which turns on debugging output.
 //
-
-
 public class CSdict {
     static final int MAX_LEN = 255;
     static Boolean debugOn = false;
@@ -56,7 +54,6 @@ public class CSdict {
         String userInput;
         while (true) {
             // Code to read command line input and extract arguments.
-
             try {
                 byte cmdString[] = new byte[MAX_LEN];
                 System.out.print("csdict> ");
@@ -70,8 +67,6 @@ public class CSdict {
                 command = inputs[0].toLowerCase().trim();
                 // Remainder of the inputs is the arguments.
                 arguments = Arrays.copyOfRange(inputs, 1, inputs.length);
-
-
 
             } catch (IOException exception) {
                 System.err.println("998 Input error while reading commands, terminating.");
@@ -89,7 +84,7 @@ public class CSdict {
                                 break;
                             }
                             openCommand(arguments[0], Integer.parseInt(arguments[1]));
-                            //1 or more arguments invalid ie. second arg non-numeric value
+                            // 1 or more arguments invalid ie. second arg non-numeric value
                         } catch (NumberFormatException exception) {
                             System.err.println("902 Invalid argument.");
                         }
@@ -210,6 +205,7 @@ public class CSdict {
                     System.out.println("***No definition found***");
                     matchCommand(word, dictName, ".");
                     break;
+                // if invalid database, print error and resets database
                 } else if (defList.contains("550 invalid database")) {
                     System.out.println("999 Processing error. Invalid database.");
                     myDict = "*";
@@ -218,11 +214,11 @@ public class CSdict {
                 } else if (defList.contains("530")) {
                     System.err.println("999 Processing error. Access Denied.");
                     break;
-                // break if 250 ok
+                // break when finished
                 } else if (defList.contains("250 ok")) {
                     break;
                 }
-                // Print @ if 151 is found
+                // Print @ if 151 is found when debugOn is false
                 if (!debugOn & defList.toLowerCase().contains("151 " + "\"" + word.toLowerCase() + "\"")) {
                     System.out.println("@" + defList.substring(STATUS_LENGTH + word.length()));
                 } else if (!containsStatusMessage(defList)){
@@ -230,8 +226,7 @@ public class CSdict {
                 }
             }
         } catch (Exception exception) {
-            System.err.println(exception);
-            // System.err.println("999 Processing error.\"Define\" failed to be called");
+            System.err.println("999 Processing error.\"Define\" failed to be called");
             System.exit(-1);
           }
       }
@@ -239,7 +234,6 @@ public class CSdict {
     /*
      * Retrieve and print all the exact matches for given input word.
      * User can specify a dictionary using dictName, and a match type using strategy.
-     * Strategies accepted are ".", "exact", "prefix".
     */
     private static void matchCommand(String word, String dictName, String strategy) {
         if(socket == null || socket.isClosed()) {
@@ -266,14 +260,17 @@ public class CSdict {
                 } else if (matchList.contains("552 no match") && strategy.equals("prefix")) {
                     System.out.println("***No matching word(s) found****");
                     break;
+                // Handles invalid database, resets database to "*"
                 } else if (matchList.contains("550 invalid database")) {
                     System.out.println("999 Processing error. Invalid database.");
                     myDict = "*";
                     System.out.println("Database reset to: " + myDict);
                     break;
+                // break if access denied
                 } else if (matchList.contains("530")) {
                     System.err.println("999 Processing error. Access Denied.");
                     break;
+                // break when complete
                 } else if (matchList.contains("250 ok")) {
                     break;
                 }
