@@ -99,7 +99,12 @@ public class CSdict {
                             System.err.println("901 Incorrect number of arguments.");
                             break;
                         }
+                        if (socket == null) {
+                            System.err.println("903 Supplied command not expected at this time.");
+                            break;
+                        }
                         myDict = arguments[0];
+                        System.out.println("Strategy set to: " + myDict);
                         break;
                     case "define":
                         if (arguments.length != 1) {
@@ -167,17 +172,21 @@ public class CSdict {
             out.println("Show DB");
             if (debugOn) {
                 System.out.println("> DICT");
-                System.out.println("<-- " + in.readLine());
             }
             String dictList;
             while(true) {
                 dictList = in.readLine();
+                if (debugOn & containsStatusMessage(dictList)) {
+                    System.out.println("<-- " + dictList);
+                }
                 if (dictList.contains("250 ok")) break;
                 if (dictList.contains("530")) {
                     System.err.println("999 Processing error. Access Denied.");
                     break;
                 }
-                System.out.println(dictList);
+                if (!debugOn & !containsStatusMessage(dictList)) {
+                    System.out.println(dictList);
+                }
             }
         } catch (Exception exception){
             System.err.println("999 Processing error. \"Dict\" failed to be called");
@@ -213,6 +222,9 @@ public class CSdict {
                     break;
                 } else if (defList.contains("550 invalid database")) {
                     System.out.println("999 Processing error. Invalid database.");
+                    break;
+                } else if (defList.contains("530")) {
+                    System.err.println("999 Processing error. Access Denied.");
                     break;
                 // break if 250 ok
                 } else if (defList.contains("250 ok")) {
@@ -262,6 +274,9 @@ public class CSdict {
                     break;
                 } else if (matchList.contains("550 invalid database")) {
                     System.out.println("999 Processing error. Invalid database.");
+                    break;
+                } else if (matchList.contains("530")) {
+                    System.err.println("999 Processing error. Access Denied.");
                     break;
                 } else if (matchList.contains("250 ok")) {
                     break;
