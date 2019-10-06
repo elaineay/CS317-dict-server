@@ -27,7 +27,7 @@ other will then update their by doing a pull and then add their
 information to this file and then commit and push this file.
 
 
-STUDENT 1
+STUDENT  1
 Name : Elaine Au-Yang
 St. No: 14609168
 Unix Id : elaineay
