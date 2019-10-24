@@ -1,1 +1,23 @@
-Replace with the proper scheme
+Total before late penalty: [80/88]
+You can check file commandline_outputs.txt for the full output from the autoexpect tests.
+You can also refer to rubric at Canvas for more details.
+Automatically graded points: 64 / 66
+Criteria || Pts || Comments quit || 4 / 4 || 
+set || 4 / 4 || 
+make || 2 / 2 || 
+prefixmatch || 6 / 6 || 
+parse || 3 / 3 || 
+dict || 4 / 4 || 
+error || 12 / 14 || Doesn't handle an end-of-file in standard input -2pts
+close || 4 / 4 || 
+open || 5 / 5 || 
+match || 6 / 6 || 
+define || 14 / 14 || 
+This part is graded manually: 16 / 22
+
+Criteria || Pts || Comments-d option || 0 / 6 || make rund threw an error 
+handling of error 925 || 2 / 2 || 
+documentation || 3 / 3 || 
+other || 5 / 5 || 
+quality || 3 / 3 || 
+readability || 3 / 3 || 
